@@ -37,7 +37,7 @@ export default function Sidebar() {
         <div className="bg-primary rounded-xl p-2">
           <ShoppingBag className="h-5 w-5 text-white" />
         </div>
-        <span className="font-bold text-lg">KasirKu</span>
+        <span className="font-bold text-lg">ARTHAVA</span>
       </div>
 
       {/* Menu */}

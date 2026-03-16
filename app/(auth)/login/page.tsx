@@ -3,12 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ShoppingCart, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -40,10 +41,16 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="bg-primary rounded-2xl p-3 mb-3">
-            <ShoppingCart className="h-8 w-8 text-primary-foreground" />
-          </div>
-          <h1 className="text-2xl font-bold">KasirKu</h1>
+          <Image
+
+            src="/192x192.png"
+            alt="Arthava Logo"
+            width={96}
+            height={96}
+            className="mb-3 drop-shadow-md rounded-3xl"
+            priority
+          />
+          <h1 className="text-2xl font-bold">Arthava</h1>
           <p className="text-muted-foreground text-sm">Aplikasi kasir untuk UMKM</p>
         </div>
 

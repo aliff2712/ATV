@@ -1,6 +1,6 @@
 {
   "name": "ARTHAVA — Aplikasi Kasir UMKM",
-  "short_name": "KasirKu",
+  "short_name": "Artahva",
   "description": "Aplikasi kasir dan manajemen toko untuk UMKM",
   "start_url": "/dashboard",
   "scope": "/",

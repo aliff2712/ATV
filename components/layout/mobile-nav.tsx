@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, ShoppingCart, Package, BarChart3, Boxes } from 'lucide-react'
+import { LayoutDashboard, ShoppingCart, Package, BarChart3, Boxes, LogOut } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const menus = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -15,10 +16,18 @@ const menus = [
 
 export default function MobileNav() {
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/login')
+    router.refresh()
+  }
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50">
-      <div className="flex">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50 safe-area-pb">
+      <div className="flex items-stretch">
         {menus.map((menu) => {
           const Icon = menu.icon
           const active = pathname === menu.href || pathname.startsWith(menu.href + '/')
@@ -27,7 +36,7 @@ export default function MobileNav() {
               key={menu.href}
               href={menu.href}
               className={cn(
-                'flex-1 flex flex-col items-center py-2 gap-1 text-xs font-medium transition-colors',
+                'flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-medium transition-colors',
                 active ? 'text-primary' : 'text-slate-400'
               )}
             >
@@ -36,6 +45,18 @@ export default function MobileNav() {
             </Link>
           )
         })}
+
+        {/* Divider */}
+        <div className="w-px bg-slate-100 my-2" />
+
+        {/* Logout */}
+        <button
+          onClick={handleLogout}
+          className="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-medium text-red-400 transition-colors active:text-red-600"
+        >
+          <LogOut className="h-5 w-5" />
+          Keluar
+        </button>
       </div>
     </nav>
   )

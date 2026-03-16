@@ -2,6 +2,21 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/icons') ||
+    pathname === '/manifest.json' ||
+    pathname === '/favicon.ico' ||
+    pathname.endsWith('.png') ||
+    pathname.endsWith('.jpg') ||
+    pathname.endsWith('.jpeg') ||
+    pathname.endsWith('.svg') ||
+    pathname.endsWith('.webp')
+  ) {
+    return NextResponse.next()
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -9,7 +24,9 @@ export async function proxy(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return request.cookies.getAll() },
+        getAll() {
+          return request.cookies.getAll()
+        },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
@@ -19,17 +36,18 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') ||
-                     request.nextUrl.pathname.startsWith('/register')
+  const isAuthPage =
+    pathname.startsWith('/login') || pathname.startsWith('/register')
 
-  // Kalau belum login dan bukan halaman auth → redirect ke login
   if (!user && !isAuthPage) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Kalau sudah login dan buka halaman auth → redirect ke dashboard
+
   if (user && isAuthPage) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
@@ -38,5 +56,8 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg)).*)'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|manifest.json|icons|.*\\.(?:svg|png|jpg|jpeg|webp|ico)).*)',
+  ],
 }
+
